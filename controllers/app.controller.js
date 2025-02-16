@@ -34,6 +34,9 @@ export const votePoll = async (req, res) => {
 export const getAllPolls = async (req, res) => {
   try {
     const polls = await Poll.find();
+    if (polls.length === 0) {
+      return res.status(404).json({ error: "No polls found" });
+    }
     res.status(200).json(polls);
   } catch (error) {
     console.error(error);
