@@ -17,13 +17,18 @@ export const createPoll = async (req, res) => {
 
 export const votePoll = async (req, res) => {
   try {
-    const { optionIndex } = req.body;
+    const { optionId } = req.body;
     const poll = await Poll.findById(req.params.id);
     if (!poll) {
       return res.status(404).json({ error: "Poll not found" });
     }
-    poll.options[optionIndex].votes += 1;
+    const option = poll.options.find((opt) => opt._id.toString() === optionId);
+    if (!option) {
+      return res.status(404).json({ error: "Option not found" });
+    }
+    option.votes += 1;
     await poll.save();
+
     res.status(200).json(poll);
   } catch (error) {
     console.error(error);
